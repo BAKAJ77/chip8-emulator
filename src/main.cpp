@@ -1,7 +1,23 @@
+#include <window.h>
 #include <iostream>
 
 int main(int argc, char** argv)
 {
-    std::cout << "This is the main function.\n";
-    return 0;
+    try
+    {
+        Window emulatorWindow("Chip8Emulator");
+
+        while (!emulatorWindow.WasRequestedToClose())
+        {
+            emulatorWindow.PollEvents();
+            emulatorWindow.SwapRenderBuffers();
+        }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
