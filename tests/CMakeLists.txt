@@ -3,7 +3,7 @@ if (BUILD_EMULATOR_TESTS)
         "${PROJECT_SOURCE_DIR}/src")
 
     set(TEST_TARGETS window)
-    add_executable(window window.cpp "../src/window.h" "../src/window.cpp" "../external/glad/glad/glad.c")
+    add_executable(window window.cpp "../src/core/window.h" "../src/core/window.cpp" "../external/glad/glad/glad.c")
     
     foreach(TEST_TARGET IN LISTS TEST_TARGETS)
         set_target_properties("${TEST_TARGET}" PROPERTIES 

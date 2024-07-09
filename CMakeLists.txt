@@ -14,7 +14,7 @@ set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/glad" "${PROJECT
     "${PROJECT_SOURCE_DIR}/src")
 
 set(PROJECT_HEADER_FILES "")
-set(PROJECT_SOURCE_FILES "external/glad/glad/glad.c" "src/main.cpp" "src/window.h" "src/window.cpp")
+set(PROJECT_SOURCE_FILES "external/glad/glad/glad.c" "src/main.cpp" "src/core/window.h" "src/core/window.cpp")
 
 set(BUILD_SHARED_LIBS OFF) # Force GLFW to be built statically
 option(BUILD_EMULATOR_TESTS "Defines whether or not the emulator tests should be built" ON)
