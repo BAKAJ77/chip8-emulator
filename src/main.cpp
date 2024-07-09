@@ -1,4 +1,4 @@
-#include <window.h>
+#include <core/window.h>
 #include <iostream>
 
 int main(int argc, char** argv)
