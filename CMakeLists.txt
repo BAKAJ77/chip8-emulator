@@ -10,13 +10,12 @@ set(CMAKE_CONFIGURATION_TYPES "Debug" "Release")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # Define project include directories, and the project source code files
-set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/glad" "${PROJECT_SOURCE_DIR}/external/glfw/include"
-    "${PROJECT_SOURCE_DIR}/src")
+set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/src")
 
-set(PROJECT_HEADER_FILES "")
-set(PROJECT_SOURCE_FILES "external/glad/glad/glad.c" "src/main.cpp" "src/core/window.h" "src/core/window.cpp")
+set(PROJECT_HEADER_FILES "src/core/window.h")
+set(PROJECT_SOURCE_FILES "src/main.cpp" "src/core/window.cpp")
 
-set(BUILD_SHARED_LIBS OFF) # Force GLFW to be built statically
+set(BUILD_SHARED_LIBS OFF) # Force SDL to be built statically
 option(BUILD_EMULATOR_TESTS "Defines whether or not the emulator tests should be built" ON)
 
 # Define executable target and configure the target
@@ -27,8 +26,8 @@ set_target_properties(Chip8Emulator PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/debug,${CMAKE_BINARY_DIR}/bin/release>"
     ARCHIVE_OUTPUT_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/debug,${CMAKE_BINARY_DIR}/bin/release>")
 
-add_subdirectory("external/glfw")
-target_link_libraries(Chip8Emulator PRIVATE glfw)
+add_subdirectory("external/SDL")
+target_link_libraries(Chip8Emulator PRIVATE SDL3-static)
 
 if (MSVC)
     target_compile_options(Chip8Emulator PRIVATE "/std:c++17") # Force MSVC to use C++17 standard

@@ -5,12 +5,18 @@ int main(int argc, char** argv)
 {
     try
     {
-        Window emulatorWindow("Chip8Emulator");
-
-        while (!emulatorWindow.WasRequestedToClose())
+        WindowFrame emulatorWindow("Chip8Emulator");
+        
+        bool terminateEmulator = false;
+        while (!terminateEmulator) // The emulator game loop
         {
-            emulatorWindow.PollEvents();
-            emulatorWindow.SwapRenderBuffers();
+            // Handle window events
+            SDL_Event event;
+            while (emulatorWindow.PollEvents(event))
+            {
+                if (event.type == SDL_EVENT_QUIT)
+                    terminateEmulator = true;
+            }
         }
     }
     catch(const std::exception& e)

@@ -1,64 +1,60 @@
 #include <core/window.h>
-#include <glad/glad.h>
-#include <glfw/glfw3.h>
 #include <stdexcept>
 
-Window::Window(std::string_view title, int width, int height) :
-    m_title(title), m_width(width), m_height(height)
+WindowFrame::WindowFrame(std::string_view title, int width, int height, int xPos, int yPos) :
+    m_title(title), m_xPos(xPos), m_yPos(yPos), m_width(width), m_height(height)
 {
-    if (!glfwInit()) // Initialize GLFW
-        throw std::runtime_error("Failed to initialize GLFW");
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) // Init the SDL video subsystem
+        throw std::runtime_error("Failed to initialize SDL3 (Error: " + std::string(SDL_GetError()) + ")");
 
-    // Configure window hints
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, false);
+    // Create and setup the window frame
+    m_frame = SDL_CreateWindow(title.data(), width, height, NULL);
+    if (!m_frame)
+        throw std::runtime_error("Failed to create SDL window (Error: " + std::string(SDL_GetError()) + ")");
 
-    // Create and setup the window
-    m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
-    if (!m_window)
-        throw std::runtime_error("Failed to create GLFW window");
-
-    const GLFWvidmode* monitorData = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    if (!monitorData)
-        throw std::runtime_error("Failed to fetch monitor video mode data");
-
-    glfwSetWindowPos(m_window, (monitorData->width / 2) - (width / 2), (monitorData->height / 2) - (height / 2));
-    glfwMakeContextCurrent(m_window);
-
-    // Load the addresses of each OpenGL function
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        throw std::runtime_error("Failed to load the addresses of each OpenGL function");
+    SDL_SetWindowPosition(m_frame, xPos, yPos);
 }
 
-Window::~Window()
-{
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
+WindowFrame::~WindowFrame() 
+{ 
+    SDL_DestroyWindow(m_frame); 
+    SDL_Quit();
 }
 
-void Window::SetTitle(std::string_view title) 
+void WindowFrame::SetTitle(std::string_view title) 
 {
-    glfwSetWindowTitle(m_window, title.data()); 
+    if (SDL_SetWindowTitle(m_frame, title.data()) < 0)
+        throw std::runtime_error("Failed to change SDL window title (Error: " + std::string(SDL_GetError()) + ")");
+
     m_title = title; 
 }
 
-void Window::SetSize(int width, int height) 
+void WindowFrame::SetPosition(int xPos, int yPos)
+{
+    if (SDL_SetWindowPosition(m_frame, xPos, yPos) < 0)
+        throw std::runtime_error("Failed to change SDL window position (Error: " + std::string(SDL_GetError()) + ")");
+
+    m_xPos = xPos;
+    m_yPos = yPos; 
+}
+
+void WindowFrame::SetSize(int width, int height) 
 { 
-    glfwSetWindowSize(m_window, width, height);
+    if (SDL_SetWindowSize(m_frame, width, height) < 0)
+        throw std::runtime_error("Failed to change SDL window size (Error: " + std::string(SDL_GetError()) + ")");
+
     m_width = width;
     m_height = height; 
 }
 
-void Window::PollEvents() const { glfwPollEvents(); }
+bool WindowFrame::PollEvents(SDL_Event& event) const { return SDL_PollEvent(&event); }
 
-void Window::SwapRenderBuffers() const { glfwSwapBuffers(m_window); }
+const std::string& WindowFrame::GetTitle() const { return m_title; }
 
-bool Window::WasRequestedToClose() const { return glfwWindowShouldClose(m_window); }
+const int& WindowFrame::GetPositionX() const { return m_xPos; }
 
-const std::string &Window::GetTitle() const { return m_title; }
+const int& WindowFrame::GetPositionY() const { return m_yPos; }
 
-const int &Window::GetWidth() const { return m_width; }
+const int& WindowFrame::GetWidth() const { return m_width; }
 
-const int &Window::GetHeight() const { return m_height; }
+const int& WindowFrame::GetHeight() const { return m_height; }
