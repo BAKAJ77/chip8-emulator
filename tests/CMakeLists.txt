@@ -2,7 +2,8 @@ if (BUILD_EMULATOR_TESTS)
     include_directories("${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/src")
 
     set(TEST_TARGETS window)
-    add_executable(window window.cpp "../src/core/window.h" "../src/core/window.cpp")
+    add_executable(window window.cpp "../src/vector.h" "../src/core/window.h" "../src/core/window.cpp" "../src/core/renderer.h" 
+        "../src/core/renderer.cpp")
     
     foreach(TEST_TARGET IN LISTS TEST_TARGETS)
         set_target_properties("${TEST_TARGET}" PROPERTIES 
@@ -14,5 +15,5 @@ if (BUILD_EMULATOR_TESTS)
         target_link_libraries("${TEST_TARGET}" PRIVATE SDL3-static)
     endforeach()
 
-    add_test(NAME WindowTest COMMAND window)
+    add_test(NAME window COMMAND window)
 endif()

@@ -12,8 +12,8 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 # Define project include directories, and the project source code files
 set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/src")
 
-set(PROJECT_HEADER_FILES "src/core/window.h")
-set(PROJECT_SOURCE_FILES "src/main.cpp" "src/core/window.cpp")
+set(PROJECT_HEADER_FILES "src/vector.h" "src/core/window.h" "src/core/renderer.h")
+set(PROJECT_SOURCE_FILES "src/main.cpp" "src/core/window.cpp" "src/core/renderer.cpp")
 
 set(BUILD_SHARED_LIBS OFF) # Force SDL to be built statically
 option(BUILD_EMULATOR_TESTS "Defines whether or not the emulator tests should be built" ON)
