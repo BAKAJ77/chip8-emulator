@@ -5,11 +5,14 @@ int main(int argc, char** argv)
 {
     try
     {
-        WindowFrame emulatorWindow("Chip8Emulator");
+        WindowFrame emulatorWindow("Chip-8 Emulator");
+        GraphicsRenderer& renderer = emulatorWindow.GetRenderer();
         
         bool terminateEmulator = false;
         while (!terminateEmulator) // The emulator game loop
         {
+            renderer.Clear(); // Clear the back render buffer
+
             // Handle window events
             SDL_Event event;
             while (emulatorWindow.PollEvents(event))
@@ -17,6 +20,8 @@ int main(int argc, char** argv)
                 if (event.type == SDL_EVENT_QUIT)
                     terminateEmulator = true;
             }
+
+            renderer.Update(); // Swap the render buffers
         }
     }
     catch(const std::exception& e)

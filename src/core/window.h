@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <SDL3/SDL.h>
+#include <core/renderer.h>
 #include <string>
 
 class WindowFrame
@@ -10,13 +10,11 @@ public:
     /**
      * @brief Initializes GLFW and GLAD, then creates a window along with a OpenGL context.
      * @param[in] title The title to be assigned to the window.
-     * @param[in] width The desired width of the window.
-     * @param[in] height The desired height of the window.
-     * @param[in] xPos The desired x-axis position of the window.
-     * @param[in] yPos The desired y-axis position of the window.
+     * @param[in] resolution The desired resolution of the window.
+     * @param[in] position The desired position of the window.
      */
-    WindowFrame(std::string_view title, int width = 640, int height = 320, int xPos = SDL_WINDOWPOS_CENTERED, 
-        int yPos = SDL_WINDOWPOS_CENTERED);
+    WindowFrame(std::string_view title, Vector2<int> resolution = { 640, 320 }, 
+        Vector2<int> position = { SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED });
 
     ~WindowFrame();
 
@@ -28,17 +26,15 @@ public:
 
     /**
      * @brief Sets the position of the window.
-     * @param[in] xPos The new desired x-axis position of the window.
-     * @param[in] yPos The new desired y-axis position of the window.
+     * @param[in] position The new desired position of the window.
      */
-    void SetPosition(int xPos, int yPos);
+    void SetPosition(Vector2<int> position);
 
     /**
-     * @brief Sets the size of the window.
-     * @param[in] width The new desired width of the window.
-     * @param[in] height The new desired height of the window.
+     * @brief Sets the resolution of the window.
+     * @param[in] resolution The new desired resolution of the window.
      */
-    void SetSize(int width, int height);
+    void SetResolution(Vector2<int> resolution);
 
     /**
      * @brief Fetches the next pending event in the event queue.
@@ -48,38 +44,34 @@ public:
     bool PollEvents(SDL_Event& event) const;
 
     /**
+     * @brief Gets the window's graphics rendering context.
+     * @return A reference to the graphics renderer attached to the window.
+     */
+    GraphicsRenderer& GetRenderer();
+
+    /**
      * @brief Gets the title of the window.
      * @return A string representing the title of the window.
      */
     const std::string& GetTitle() const;
 
     /**
-     * @brief Gets the x-axis position of the window.
-     * @return An integer representing the x-axis position of the window.
+     * @brief Gets the position of the window.
+     * @return A 2-dimensional vector representing the position of the window.
      */
-    const int& GetPositionX() const;
+    const Vector2<int>& GetPosition() const;
 
     /**
-     * @brief Gets the y-axis position of the window.
-     * @return An integer representing the y-axis position of the window.
+     * @brief Gets the resolution of the window.
+     * @return A 2-dimensional vector representing the resolution of the window.
      */
-    const int& GetPositionY() const;
-
-    /**
-     * @brief Gets the width of the window.
-     * @return An integer representing the width of the window.
-     */
-    const int& GetWidth() const;
-
-    /**
-     * @brief Gets the height of the window.
-     * @return An integer representing the height of the window.
-     */
-    const int& GetHeight() const;
+    const Vector2<int>& GetResolution() const;
 private:
     SDL_Window* m_frame;
     std::string m_title;
-    int m_xPos, m_yPos, m_width, m_height;
+    Vector2<int> m_position, m_resolution;
+    
+    GraphicsRenderer m_renderer;
 };
 
 #endif
