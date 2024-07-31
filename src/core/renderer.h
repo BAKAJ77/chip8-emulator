@@ -42,12 +42,12 @@ public:
     void Update();
 
     /**
-     * @brief Draws a rectangle sprite, of specified size and position, onto the back render buffer.
-     * @param[in] position The position of the rectangle sprite.
-     * @param[in] heightPixels The height of the rectangle sprite in pixels (the width is fixed at 8 pixels).
-     * @param[in] color The color of the rectangle sprite.
+     * @brief Draws a rectangle of specified size and position onto the back render buffer.
+     * @param[in] position The position of the rectangle.
+     * @param[in] size The size of the rectangle.
+     * @param[in] color The color of the rectangle.
      */
-    void DrawSprite(Vector2<int> position, int heightPixels, Vector3<uint8_t> color = { 255, 255, 255 });
+    void DrawRect(Vector2<int> position, Vector2<int> size, Vector3<uint8_t> color = { 255, 255, 255 });
 
     /**
      * @brief Gets the current assigned color to be used when clearing the back render buffer.

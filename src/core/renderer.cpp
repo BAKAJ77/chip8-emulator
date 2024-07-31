@@ -25,9 +25,9 @@ void GraphicsRenderer::Clear()
 
 void GraphicsRenderer::Update() { SDL_RenderPresent(m_renderingContext); }
 
-void GraphicsRenderer::DrawSprite(Vector2<int> position, int heightPixels,  Vector3<uint8_t> color)
+void GraphicsRenderer::DrawRect(Vector2<int> position, Vector2<int> size,  Vector3<uint8_t> color)
 {
-    SDL_FRect spriteRect = { (float)position.x, (float)position.y, 8, (float)heightPixels };
+    SDL_FRect spriteRect = { (float)position.x, (float)position.y, (float)size.x, (float)size.y };
 
     SDL_SetRenderDrawColor(m_renderingContext, color.r, color.g, color.b, 255);
     SDL_RenderFillRect(m_renderingContext, &spriteRect);
