@@ -10,10 +10,11 @@ set(CMAKE_CONFIGURATION_TYPES "Debug" "Release")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # Define project include directories, and the project source code files
-set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/src")
+set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/external/json/include" 
+    "${PROJECT_SOURCE_DIR}/src")
 
-set(PROJECT_HEADER_FILES "src/vector.h" "src/core/window.h" "src/core/renderer.h")
-set(PROJECT_SOURCE_FILES "src/main.cpp" "src/core/window.cpp" "src/core/renderer.cpp")
+set(PROJECT_HEADER_FILES "src/vector.h" "src/core/window.h" "src/core/renderer.h" "src/core/interpreter.h")
+set(PROJECT_SOURCE_FILES "src/main.cpp" "src/core/window.cpp" "src/core/renderer.cpp" "src/core/interpreter.cpp")
 
 set(BUILD_SHARED_LIBS OFF) # Force SDL to be built statically
 option(BUILD_EMULATOR_TESTS "Defines whether or not the emulator tests should be built" ON)
@@ -21,12 +22,16 @@ option(BUILD_EMULATOR_TESTS "Defines whether or not the emulator tests should be
 # Define executable target and configure the target
 add_executable(Chip8Emulator "${PROJECT_HEADER_FILES}" "${PROJECT_SOURCE_FILES}")
 target_include_directories(Chip8Emulator PUBLIC "${PROJECT_INCLUDE_DIRECTORIES}")
+target_compile_definitions(Chip8Emulator PUBLIC "$<$<CONFIG:Debug>:DEBUG_MODE>")
+
 set_target_properties(Chip8Emulator PROPERTIES 
     RUNTIME_OUTPUT_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/debug,${CMAKE_BINARY_DIR}/bin/release>"
     LIBRARY_OUTPUT_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/debug,${CMAKE_BINARY_DIR}/bin/release>"
     ARCHIVE_OUTPUT_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/debug,${CMAKE_BINARY_DIR}/bin/release>")
 
 add_subdirectory("external/SDL")
+add_subdirectory("external/json")
+
 target_link_libraries(Chip8Emulator PRIVATE SDL3-static)
 
 if (MSVC)
