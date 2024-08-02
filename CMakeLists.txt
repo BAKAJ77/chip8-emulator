@@ -13,7 +13,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/external/json/include" 
     "${PROJECT_SOURCE_DIR}/src")
 
-set(PROJECT_HEADER_FILES "src/vector.h" "src/core/window.h" "src/core/renderer.h" "src/core/interpreter.h")
+set(PROJECT_HEADER_FILES "src/vector.h" "src/core/window.h" "src/core/renderer.h" "src/core/interpreter.h" "src/debugging.h")
 set(PROJECT_SOURCE_FILES "src/main.cpp" "src/core/window.cpp" "src/core/renderer.cpp" "src/core/interpreter.cpp")
 
 set(BUILD_SHARED_LIBS OFF) # Force SDL to be built statically
