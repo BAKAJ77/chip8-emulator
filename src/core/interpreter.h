@@ -5,6 +5,7 @@
     #include <core/window.h>
     #include <core/renderer.h>
     #include <nlohmann/json.hpp>
+    #include <SDL3_mixer/SDL_mixer.h>
 #endif
 
 #include <string>
@@ -314,6 +315,7 @@ private:
 #ifndef INTERPRETER_IMPL_TEST
 private:
     nlohmann::json m_keyBindings;
+    Mix_Chunk* m_beepSound;
 #endif
     struct Instruction
     {

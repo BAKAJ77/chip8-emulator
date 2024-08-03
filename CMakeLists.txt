@@ -10,8 +10,8 @@ set(CMAKE_CONFIGURATION_TYPES "Debug" "Release")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # Define project include directories, and the project source code files
-set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/external/json/include" 
-    "${PROJECT_SOURCE_DIR}/src")
+set(PROJECT_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SDL/include" "${PROJECT_SOURCE_DIR}/external/SDL_mixer/include"
+    "${PROJECT_SOURCE_DIR}/external/json/include" "${PROJECT_SOURCE_DIR}/src")
 
 set(PROJECT_HEADER_FILES "src/vector.h" "src/core/window.h" "src/core/renderer.h" "src/core/interpreter.h" "src/debugging.h")
 set(PROJECT_SOURCE_FILES "src/main.cpp" "src/core/window.cpp" "src/core/renderer.cpp" "src/core/interpreter.cpp")
@@ -30,14 +30,20 @@ set_target_properties(Chip8Emulator PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/debug,${CMAKE_BINARY_DIR}/bin/release>")
 
 add_subdirectory("external/SDL")
+add_subdirectory("external/SDL_mixer")
 add_subdirectory("external/json")
 
-target_link_libraries(Chip8Emulator PRIVATE SDL3-static)
+target_link_libraries(Chip8Emulator PRIVATE SDL3-static SDL3_mixer-static)
 
 if (MSVC)
     target_compile_options(Chip8Emulator PRIVATE "/std:c++17") # Force MSVC to use C++17 standard
-    target_link_options(Chip8Emulator PRIVATE "$<IF:$<CONFIG:Debug>,/SUBSYSTEM:CONSOLE,/SUBSYSTEM:WINDOWS>")
+    target_link_options(Chip8Emulator PRIVATE "$<IF:$<CONFIG:Debug>,/SUBSYSTEM:CONSOLE,/SUBSYSTEM:WINDOWS>"
+        "$<$<CONFIG:Release>:/ENTRY:mainCRTStartup>")
+    target_compile_definitions(Chip8Emulator PUBLIC "USING_MSVC")
 endif()
+
+add_custom_command(TARGET Chip8Emulator POST_BUILD COMMAND "${CMAKE_COMMAND}" -E copy_if_different 
+    "${CMAKE_SOURCE_DIR}/assets/beep.wav" "${CMAKE_BINARY_DIR}/bin/$<IF:$<CONFIG:Debug>,debug,release>/assets/beep.wav")
 
 include(CTest)
 enable_testing()

@@ -1,9 +1,9 @@
 #include <core/interpreter.h>
+#include <debugging.h>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <random>
-#include "interpreter.h"
 
 constexpr uint8_t CHIP_8_FONTSET[80] = 
 {
@@ -67,10 +67,23 @@ EmulatorInterpreter::EmulatorInterpreter()
         Instruction(0xF055, std::bind(&EmulatorInterpreter::DumpRegisters, this)),
         Instruction(0xF065, std::bind(&EmulatorInterpreter::LoadRegisters, this))
     };
+
+    // Initialize SDL mixer system
+    OutputLog("[Info] Initializing audio device for playback");
+    if (Mix_OpenAudio(NULL, nullptr) < 0)
+        throw std::runtime_error("Failed to initialize audio device for playback (SDL_Error: " + std::string(Mix_GetError()));
+
+    m_beepSound = Mix_LoadWAV("assets/beep.wav");
+    if (!m_beepSound)
+        throw std::runtime_error("Failed to load \"assets/beep.wav\" (SDL_Error: " + std::string(Mix_GetError()));
 }
 
 EmulatorInterpreter::~EmulatorInterpreter()
 {
+    Mix_FreeChunk(m_beepSound);
+    Mix_CloseAudio();
+    Mix_Quit();
+
 #ifndef INTERPRETER_IMPL_TEST
     std::ofstream file("key_bindings.json");
     file << m_keyBindings.dump(4);
@@ -121,6 +134,7 @@ void EmulatorInterpreter::LoadProgram(std::string_view filePath)
 void EmulatorInterpreter::DecodeOpcode()
 {
     uint16_t opcode = m_currentOpcode;
+    OutputLog("[Info] Executing opcode instruction: %X\n", opcode);
 
     // Only keep the parts of the opcode that are useful for identifying the instruction to execute
     // The 'data' part of the given opcode (NNN, X, Y, etc.) is removed
@@ -472,7 +486,7 @@ void EmulatorInterpreter::ExecuteCycle()
     if (m_soundTimer > 0)
     {
         if (m_soundTimer == 1)
-            std::printf("[Temporary] BEEP!!!\n"); 
+            Mix_PlayChannel(-1, m_beepSound, 0);
 
         m_soundTimer--;
     }
