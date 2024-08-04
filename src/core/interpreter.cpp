@@ -68,6 +68,7 @@ EmulatorInterpreter::EmulatorInterpreter()
         Instruction(0xF065, std::bind(&EmulatorInterpreter::LoadRegisters, this))
     };
 
+#ifndef INTERPRETER_IMPL_TEST
     // Initialize SDL mixer system
     OutputLog("[Info] Initializing audio device for playback");
     if (Mix_OpenAudio(NULL, nullptr) < 0)
@@ -76,15 +77,16 @@ EmulatorInterpreter::EmulatorInterpreter()
     m_beepSound = Mix_LoadWAV("assets/beep.wav");
     if (!m_beepSound)
         throw std::runtime_error("Failed to load \"assets/beep.wav\" (SDL_Error: " + std::string(Mix_GetError()));
+#endif
 }
 
 EmulatorInterpreter::~EmulatorInterpreter()
 {
+#ifndef INTERPRETER_IMPL_TEST
     Mix_FreeChunk(m_beepSound);
     Mix_CloseAudio();
     Mix_Quit();
 
-#ifndef INTERPRETER_IMPL_TEST
     std::ofstream file("key_bindings.json");
     file << m_keyBindings.dump(4);
 #endif
@@ -486,7 +488,11 @@ void EmulatorInterpreter::ExecuteCycle()
     if (m_soundTimer > 0)
     {
         if (m_soundTimer == 1)
+#ifndef INTERPRETER_IMPL_TEST
             Mix_PlayChannel(-1, m_beepSound, 0);
+#else
+            std::printf("Beep!\n");
+#endif
 
         m_soundTimer--;
     }
