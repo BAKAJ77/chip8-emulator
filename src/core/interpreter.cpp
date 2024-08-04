@@ -453,6 +453,7 @@ void EmulatorInterpreter::LoadKeyBindingConfig(std::string_view filePath)
     {
         m_keyBindings = 
         {
+            { "0", SDLK_X },
             { "1", SDLK_1 },
             { "2", SDLK_2 },
             { "3", SDLK_3 },
